@@ -1,0 +1,24 @@
+# ECG signal processing
+opencv-python==4.9.0.80
+numpy==1.26.4
+scipy==1.13.0
+matplotlib==3.9.0
+
+# Lab report extraction
+PyMuPDF==1.24.3
+anthropic==0.28.0
+pydantic==2.7.1
+
+# RAG + vector store
+pgvector==0.3.2
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.30
+sentence-transformers==3.0.1
+
+# API
+fastapi==0.111.0
+uvicorn==0.29.0
+python-multipart==0.0.9
+
+# Utilities
+python-dotenv==1.0.1
