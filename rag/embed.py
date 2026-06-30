@@ -12,8 +12,27 @@ def embed(text_input: str) -> list[float]:
     """Convert a string into a 384-dim vector."""
     return model.encode(text_input).tolist()
 
+def clear_patient_data(patient_id: str, source_type: str = None):
+    """
+    Remove existing chunks before re-inserting, so re-uploads don't duplicate data.
+    If source_type is given, only clears that type (e.g. only 'ecg' chunks),
+    so uploading a new lab report doesn't wipe out existing ECG data.
+    """
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        if source_type:
+            conn.execute(text("""
+                DELETE FROM medical_chunks
+                WHERE patient_id = :pid AND source_type = :stype
+            """), {"pid": patient_id, "stype": source_type})
+        else:
+            conn.execute(text("""
+                DELETE FROM medical_chunks WHERE patient_id = :pid
+            """), {"pid": patient_id})
+        conn.commit()
 
 def store_ecg_findings(patient_id: str, heart_rate: float, beats: int):
+    clear_patient_data(patient_id, source_type="ecg") 
     """
     Convert ECG analysis results into a text chunk and store it.
     We write findings as natural language so the embedding captures meaning.
@@ -35,6 +54,7 @@ def store_ecg_findings(patient_id: str, heart_rate: float, beats: int):
 
 
 def store_lab_report(patient_id: str, report):
+    clear_patient_data(patient_id, source_type="lab_report")
     """
     Store each lab result as a separate chunk so retrieval is precise.
     Storing them separately means "what is my cholesterol?" only retrieves
