@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from rag.retrieve import retrieve
 
 load_dotenv()
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
 
 
 def answer_question(question: str, patient_id: str) -> dict:
@@ -15,6 +15,7 @@ def answer_question(question: str, patient_id: str) -> dict:
       3. Generate an answer with Groq (the "G")
       4. Return the answer + the sources used, so the answer is traceable
     """
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     chunks = retrieve(question, patient_id=patient_id, top_k=4)
 
     if not chunks:
