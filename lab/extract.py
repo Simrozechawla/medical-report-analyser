@@ -7,7 +7,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv()
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
 
 
 class LabResult(BaseModel):
@@ -34,6 +34,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 
 
 def extract_lab_results(pdf_path: str) -> LabReport:
+    client   = Groq(api_key=os.getenv("GROQ_API_KEY"))
     raw_text = extract_text_from_pdf(pdf_path)
 
     prompt = f"""
